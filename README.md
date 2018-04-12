@@ -4,4 +4,6 @@ A Docker image based on the [docker-openresty](https://github.com/openresty/dock
 
 ## Versions
 
-The builds are managed by Docker Hub.
+The builds are managed by [Docker Hub](https://hub.docker.com/r/zxteam/openresty-s6/).
+
+- `latest`, `alpine`, `1.13.6.1-1-alpine`
