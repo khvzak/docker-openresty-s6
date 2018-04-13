@@ -1,0 +1,47 @@
+# docker-openresty-s6 .travis.yml
+#
+# Builds docker-openresty-s6 images on Travis CI
+#
+# https://travis-ci.org/khvzak/docker-openresty-s6
+#
+# Based on: https://github.com/openresty/docker-openresty/blob/master/.travis.yml
+#
+# Master will build with Docker tag:
+#   openresty-s6:<flavor>
+#
+# Releases should be tagged in git as:
+#   <openresty-version>-<docker-version>
+#
+# This will build with Docker tags:
+#   openresty-s6:<openresty-version>-<docker-version>-<flavor>
+#   openresty-s6:<openresty-version>-<flavor>
+#
+
+sudo: required
+
+services:
+  - docker
+
+jobs:
+  include:
+
+    - stage: build docker image for flavor alpine
+      script:
+      - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+      - docker build -t openresty-s6:alpine -f Dockerfile.alpine .
+      - if [[ "$TRAVIS_BRANCH" == "master" ]] ; then
+          docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD" &&
+          docker tag openresty-s6:alpine $DOCKER_USERNAME/openresty-s6:alpine &&
+          docker push $DOCKER_USERNAME/openresty-s6:alpine ;
+        fi
+      - if [[ "$TRAVIS_TAG" ]] ; then
+          TRAVIS_TAG_BASE=$(echo -n "$TRAVIS_TAG" | sed 's/-[0-9]$//g') ;
+          if [[ ( "$TRAVIS_TAG_BASE" ) && ( "$TRAVIS_TAG_BASE" != "$TRAVIS_TAG" ) ]] ; then
+            docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD" &&
+            docker tag openresty-s6:alpine $DOCKER_USERNAME/openresty-s6:$TRAVIS_TAG_BASE-alpine &&
+            docker push $DOCKER_USERNAME/openresty-s6:$TRAVIS_TAG_BASE-alpine ;
+          fi ;
+          docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD" &&
+          docker tag openresty-s6:alpine $DOCKER_USERNAME/openresty-s6:$TRAVIS_TAG-alpine &&
+          docker push $DOCKER_USERNAME/openresty-s6:$TRAVIS_TAG-alpine ;
+        fi
