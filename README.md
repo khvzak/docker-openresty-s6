@@ -8,4 +8,5 @@ A Docker image based on the [docker-openresty](https://github.com/openresty/dock
 
 The builds are managed by [Docker Hub](https://hub.docker.com/r/zxteam/openresty-s6/).
 
-- `alpine`, `1.13.6.1-2-alpine`
+- `alpine`, `1.13.6.2-alpine`, `1.13.6.2-1-alpine`
+- `1.13.6.1-2-alpine`
